@@ -65,6 +65,7 @@ app.post('/auth/register', upload.single('picture'), register);
 app.post('/posts', verifyToken, upload.single('picture'), createPost);
 
 /* --------------------------------- Routes --------------------------------- */
+// Mount Routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
@@ -83,7 +84,7 @@ mongoose
     // Start the server on successful database connection and log
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 
-    /* ADD DATA ONE TIME */
+    //! Add Data One Time
     // User.insertMany(users);
     // Post.insertMany(posts);
   })
