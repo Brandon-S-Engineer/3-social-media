@@ -1,14 +1,25 @@
 import { useState } from 'react';
+
+// MUI Components and Hooks
 import { Box, Button, TextField, useMediaQuery, Typography, useTheme } from '@mui/material';
+
+// MUI Icon
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { Formik } from 'formik';
-import * as yup from 'yup';
+
+import { Formik } from 'formik'; // Library for building forms in React.
+import * as yup from 'yup'; // Blueprint builder library for value parsing and validation.
+
 import { useNavigate } from 'react-router-dom';
+
+// Redux
 import { useDispatch } from 'react-redux';
 import { setLogin } from 'state';
-import Dropzone from 'react-dropzone';
-import FlexBetween from 'components/FlexBetween';
 
+import Dropzone from 'react-dropzone'; // Handle file uploads via drag-and-drop.
+import FlexBetween from 'components/FlexBetween';
+import { Password } from '@mui/icons-material';
+
+// Validation Blueprint
 const loginSchema = yup.object().shape({
   email: yup.string().email('invalid email').required('required'),
   password: yup.string().required('required'),
@@ -30,7 +41,7 @@ const registerSchema = yup.object().shape({
 });
 
 const initialValuesRegister = {
-  firstName: '',
+  firstName: '', // Has to be the same key on prop: name
   lastName: '',
   email: '',
   password: '',
@@ -41,42 +52,52 @@ const initialValuesRegister = {
 
 const Form = () => {
   const [pageType, setPageType] = useState('login');
-  const { palette } = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const isNonMobile = useMediaQuery('(min-width:600px)');
   const isLogin = pageType === 'login';
   const isRegister = pageType === 'register';
 
-  const register = async (values, onSubmitProps) => {
-    const formData = new FormData();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const { palette } = useTheme();
+  const isNonMobile = useMediaQuery('(min-width:600px)');
+
+  const register = async (values, onSubmitProps) => {
+    // Initialize and setup formData object
+    const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
-
     formData.append('picturePath', values.picture.name);
 
+    // Send POST request
     const savedUserResponse = await fetch('http://localhost:3001/auth/register', {
       method: 'POST',
       body: formData,
     });
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
 
+    // Process Response
+    const savedUser = await savedUserResponse.json();
+    onSubmitProps.resetForm(); // reset form
+
+    // Switch to login page
     if (savedUser) {
       setPageType('login');
     }
   };
 
   const login = async (values, onSubmitProps) => {
+    // POST request to login
     const loggedInResponse = await fetch('http://localhost:3001/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values),
     });
+
+    // Process response
     const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
+    onSubmitProps.resetForm(); // reset form
+
+    // Update Redux store and navigate
     if (loggedIn) {
       dispatch(
         setLogin({
@@ -89,8 +110,8 @@ const Form = () => {
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isLogin) await login(values, onSubmitProps);
     if (isRegister) await register(values, onSubmitProps);
+    if (isLogin) await login(values, onSubmitProps);
   };
 
   return (
@@ -98,6 +119,7 @@ const Form = () => {
       onSubmit={handleFormSubmit}
       initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
       validationSchema={isLogin ? loginSchema : registerSchema}>
+      {/* Render Prop Pattern */}
       {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue, resetForm }) => (
         <form onSubmit={handleSubmit}>
           <Box
@@ -107,6 +129,7 @@ const Form = () => {
             sx={{
               '& > div': { gridColumn: isNonMobile ? undefined : 'span 2' },
             }}>
+            {/* Register Interface */}
             {isRegister && (
               <>
                 <TextField
@@ -114,9 +137,9 @@ const Form = () => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.firstName}
-                  name='firstName'
-                  error={Boolean(touched.firstName) && Boolean(errors.firstName)}
-                  helperText={touched.firstName && errors.firstName}
+                  name='firstName' // specifies which key in Formik's state this field corresponds to
+                  error={Boolean(touched.firstName) && Boolean(errors.firstName)} // true if Touched && Error
+                  helperText={touched.firstName && errors.firstName} // Display the err message
                   sx={{ gridColumn: 'span 1' }}
                 />
                 <TextField
@@ -158,15 +181,20 @@ const Form = () => {
                     acceptedFiles='.jpg,.jpeg,.png'
                     multiple={false}
                     onDrop={(acceptedFiles) => setFieldValue('picture', acceptedFiles[0])}>
+                    {/* Render Prop Pattern */}
                     {({ getRootProps, getInputProps }) => (
                       <Box
+                        // Dropzone
                         {...getRootProps()}
                         border={`2px dashed ${palette.primary.main}`}
                         p='1rem'
                         sx={{ '&:hover': { cursor: 'pointer' } }}>
+                        {/* File iput */}
                         <input {...getInputProps()} />
+
+                        {/* Placeholder */}
                         {!values.picture ? (
-                          <p>Add Picture Here</p>
+                          <p>Add picture here</p>
                         ) : (
                           <FlexBetween>
                             <Typography>{values.picture.name}</Typography>
@@ -203,7 +231,7 @@ const Form = () => {
             />
           </Box>
 
-          {/* BUTTONS */}
+          {/* Buttons */}
           <Box>
             <Button
               fullWidth
@@ -215,7 +243,7 @@ const Form = () => {
                 color: palette.background.alt,
                 '&:hover': { color: palette.primary.main },
               }}>
-              {isLogin ? 'LOGIN' : 'REGISTER'}
+              {isLogin ? 'Login' : 'Register'}
             </Button>
             <Typography
               onClick={() => {

@@ -34,6 +34,7 @@ export const themeSettings = (mode) => {
   return {
     palette: {
       mode: mode,
+      // The parentheses are necessary to ensure that the conditional expression is evaluated before the spread operator avoiding syntax errors.
       ...(mode === 'dark'
         ? {
             // palette values for dark mode

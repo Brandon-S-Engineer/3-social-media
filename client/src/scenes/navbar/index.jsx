@@ -1,9 +1,16 @@
 import { useState } from 'react';
+
+// Common MUI components for building interactive and responsive UI: layout, input forms, text styling, and adapting to screen sizes.
 import { Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery } from '@mui/material';
+
+// Icons
 import { Search, Message, DarkMode, LightMode, Notifications, Help, Menu, Close } from '@mui/icons-material';
+
+// React-Redux hooks for state management: useDispatch for dispatching actions, useSelector for accessing state.
 import { useDispatch, useSelector } from 'react-redux';
 import { setMode, setLogout } from 'state';
 import { useNavigate } from 'react-router-dom';
+
 import FlexBetween from 'components/FlexBetween';
 
 const Navbar = () => {
@@ -14,6 +21,7 @@ const Navbar = () => {
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
 
   const theme = useTheme();
+  // Colors
   const neutralLight = theme.palette.neutral.light;
   const dark = theme.palette.neutral.dark;
   const background = theme.palette.background.default;
@@ -27,6 +35,7 @@ const Navbar = () => {
       padding='1rem 6%'
       backgroundColor={alt}>
       <FlexBetween gap='1.75rem'>
+        {/* Logo */}
         <Typography
           fontWeight='bold'
           fontSize='clamp(1rem, 2rem, 2.25rem)'
@@ -55,9 +64,10 @@ const Navbar = () => {
         )}
       </FlexBetween>
 
-      {/* DESKTOP NAV */}
+      {/* Desktop Nav */}
       {isNonMobileScreens ? (
         <FlexBetween gap='2rem'>
+          {/* Toggle dark mode */}
           <IconButton onClick={() => dispatch(setMode())}>{theme.palette.mode === 'dark' ? <DarkMode sx={{ fontSize: '25px' }} /> : <LightMode sx={{ color: dark, fontSize: '25px' }} />}</IconButton>
 
           <Message sx={{ fontSize: '25px' }} />
@@ -76,10 +86,12 @@ const Navbar = () => {
                 width: '150px',
                 borderRadius: '0.25rem',
                 p: '0.25rem 1rem',
+                // Styles for the dropdown icon
                 '& .MuiSvgIcon-root': {
                   pr: '0.25rem',
                   width: '3rem',
                 },
+                // Styles applied to the Select component when it is focused
                 '& .MuiSelect-select:focus': {
                   backgroundColor: neutralLight,
                 },
@@ -88,6 +100,7 @@ const Navbar = () => {
               <MenuItem value={fullName}>
                 <Typography>{fullName}</Typography>
               </MenuItem>
+
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
             </Select>
           </FormControl>
@@ -98,7 +111,7 @@ const Navbar = () => {
         </IconButton>
       )}
 
-      {/* MOBILE NAV */}
+      {/* Mobile Nav */}
       {!isNonMobileScreens && isMobileMenuToggled && (
         <Box
           position='fixed'
@@ -109,7 +122,7 @@ const Navbar = () => {
           maxWidth='500px'
           minWidth='300px'
           backgroundColor={background}>
-          {/* CLOSE ICON */}
+          {/* Close Icon */}
           <Box
             display='flex'
             justifyContent='flex-end'
@@ -119,7 +132,7 @@ const Navbar = () => {
             </IconButton>
           </Box>
 
-          {/* MENU ITEMS */}
+          {/* Menu Items */}
           <FlexBetween
             display='flex'
             flexDirection='column'
