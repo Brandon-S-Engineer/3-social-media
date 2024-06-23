@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from 'state';
 
-const MyPostWidget = () => {
+const MyPostWidget = ({ picturePath }) => {
   const dispatch = useDispatch();
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
@@ -124,13 +124,32 @@ const MyPostWidget = () => {
             </FlexBetween>
 
             <FlexBetween gap='0.25rem'>
-              <GifBoxOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Clip</Typography>
+              <AttachFileOutlined sx={{ color: mediumMain }} />
+              <Typography color={mediumMain}>Attatchment</Typography>
+            </FlexBetween>
+
+            <FlexBetween gap='0.25rem'>
+              <MicOutlined sx={{ color: mediumMain }} />
+              <Typography color={{ mediumMain }}>Audio</Typography>
             </FlexBetween>
           </>
         ) : (
-          <FlexBetween></FlexBetween>
+          //? 3 Dots
+          <FlexBetween gap='0.25rem'>
+            <MoreHorizOutlined sx={{ color: mediumMain }} />
+          </FlexBetween>
         )}
+
+        <Button
+          disabled={!post}
+          onClick={handlePost}
+          sx={{
+            color: palette.background.alt,
+            backgroundColor: palette.primary.main,
+            borderRadius: '3rem',
+          }}>
+          Post
+        </Button>
       </FlexBetween>
     </WidgetWrapper>
   );
