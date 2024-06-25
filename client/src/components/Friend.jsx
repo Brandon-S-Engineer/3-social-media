@@ -34,12 +34,74 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;
 
-  // Check if the given friendId exists in the current user's friends list
+  // Check if the given friendId exists in the current user's friends list to update Icon
   const isFriend = friends.find((friend) => friend._id === friendId);
 
-  const patchFriend = async () => {};
+  // Asynchronous PATCH request to update user-friend relationship
+  const patchFriend = async () => {
+    const response = await fetch(`http://localhost:3001/users/${_id}/${friendId}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    // Dispatching an action to update friends in the Redux store with the new data (add/remove)
+    dispatch(setFriends({ friends: data }));
+  };
 
-  return <div>Friend</div>;
+  return (
+    <FlexBetween>
+      <FlexBetween gap='1rem'>
+        <UserImage
+          image={userPicturePath}
+          size='55px'
+        />
+
+        {/* Navigate to the friend's profile on click */}
+        <Box
+          onClick={() => {
+            navigate(`/profile/${friendId}`);
+            navigate(0); // Workaround to fix bug where components do not re-render
+          }}>
+          <Typography
+            color={medium}
+            variant='h5'
+            flexWrap='500'
+            sx={{
+              '&:hover': {
+                color: palette.primary.light,
+                cursor: 'pointer',
+              },
+            }}>
+            {name}
+          </Typography>
+
+          <Typography
+            color={medium}
+            fontSize='0.75rem'>
+            {subtitle}
+          </Typography>
+        </Box>
+      </FlexBetween>
+
+      <IconButton
+        onClick={() => patchFriend()}
+        sx={{ backgroundColor: primaryLight, p: '0.6rem' }}>
+        {/* Conditional rendering based on isFriend */}
+        {isFriend ? <PersonRemoveOutlined sx={{ color: primaryDark }} /> : <PersonAddOutlined sx={{ color: primaryDark }} />}
+      </IconButton>
+    </FlexBetween>
+  );
 };
 
 export default Friend;
+
+//? Proper solution: add a dependency to the useEffect hook
+//? This ensures that the effect runs whenever the friendId changes.
+// useEffect(() => {
+//   // Fetch new profile data or perform any update based on friendId
+//   console.log(`Profile ID changed: ${friendId}`);
+//   // Your code to handle profile change
+// }, [friendId]); // Dependency array includes friendId to re-run effect on change
