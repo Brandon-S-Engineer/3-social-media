@@ -30,7 +30,7 @@ const PostWidget = ({ postId, postUserId, name, description, location, pucturePa
   const primary = palette.primary.main;
 
   const patchLike = async () => {
-    // Send a PATCH request to update the like status of the post
+    // Send a PATCH request to update the number of likes
     const response = await fetch(`http://localjost:3001/posts/${postId}/like`, {
       method: 'PATCH',
       headers: {
@@ -40,9 +40,16 @@ const PostWidget = ({ postId, postUserId, name, description, location, pucturePa
       // Sending the logged-in user's ID in the request body
       body: JSON.stringify({ userId: loggedInUserId }),
     });
+    const updatedPost = await response.json();
+    // Dispatch an action to update the post likes in the Redux store
+    dispatch(setPost({ post: updatedPost }));
   };
 
-  return <div>PostWidget</div>;
+  return (
+    <WidgetWrapper>
+      <Friend />
+    </WidgetWrapper>
+  );
 };
 
 export default PostWidget;
