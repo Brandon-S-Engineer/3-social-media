@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // Action to update the post state in the Redux store
 import { setPost } from 'state';
 
-const PostWidget = ({ postId, postUserId, name, description, location, pucturePath, likes, comments }) => {
+const PostWidget = ({ postId, postUserId, name, description, location, picturePath, userPicturePath, likes, comments }) => {
   // State to toggle visibility of comments
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
@@ -47,7 +47,68 @@ const PostWidget = ({ postId, postUserId, name, description, location, pucturePa
 
   return (
     <WidgetWrapper>
-      <Friend />
+      <Friend
+        friendId={postUserId}
+        name={name}
+        subtitle={location}
+        userPicturePath={userPicturePath}
+      />
+
+      <Typography
+        color={main}
+        sx={{ mt: '1rem' }}>
+        {description}
+      </Typography>
+
+      {picturePath && (
+        <img
+          width='100%'
+          height='auto'
+          alt='post'
+          style={{ borderRadius: '0.75rem', marginTop: '0.75rem' }}
+          src={`http://localhost:3001/assets/${picturePath}`}
+        />
+      )}
+
+      <FlexBetween mt='0.25rem'>
+        <FlexBetween gap='1rem'>
+          {/* Likes */}
+          <FlexBetween gap='0.3rem'>
+            <IconButton onClick={patchLike}>{isLiked ? <FavoriteOutlined sx={{ color: primary }} /> : <FavoriteBorderOutlined />}</IconButton>
+            {/* Like Count */}
+            <Typography>{likeCount}</Typography>
+          </FlexBetween>
+
+          <FlexBetween gap='0.3rem'>
+            <IconButton onClick={() => setIsComments(!isComments)}>
+              {/* Toggle comments */}
+              <ChatBubbleOutlineOutlined />
+            </IconButton>
+
+            <Typography>{comments.length}</Typography>
+          </FlexBetween>
+        </FlexBetween>
+
+        {/* Share Button */}
+        <IconButton>
+          <ShareOutlined />
+        </IconButton>
+      </FlexBetween>
+
+      {/* Check if comments whould be displayed */}
+      {isComments && (
+        <Box>
+          {/* Map through the comments array */}
+          {comments.map((comment, i) => (
+            // Unique key for each comment
+            <Box key={`${name}-${i}`}>
+              <Divider />
+              <Typography sx={{ color: main, m: '0.5rem 0', pl: '1rem' }}>{comment}</Typography>
+            </Box>
+          ))}
+          <Divider />
+        </Box>
+      )}
     </WidgetWrapper>
   );
 };

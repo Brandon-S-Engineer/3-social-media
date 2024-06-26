@@ -45,6 +45,7 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
         sx={{ mt: '1rem' }}>
         {description}
       </Typography>
+
       {picturePath && (
         <img
           width='100%'
@@ -54,6 +55,7 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
           src={`http://localhost:3001/assets/${picturePath}`}
         />
       )}
+
       <FlexBetween mt='0.25rem'>
         <FlexBetween gap='1rem'>
           <FlexBetween gap='0.3rem'>
