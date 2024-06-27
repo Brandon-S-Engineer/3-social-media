@@ -75,6 +75,7 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
           <ShareOutlined />
         </IconButton>
       </FlexBetween>
+
       {isComments && (
         <Box mt='0.5rem'>
           {comments.map((comment, i) => (

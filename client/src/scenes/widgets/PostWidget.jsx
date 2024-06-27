@@ -31,10 +31,10 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
 
   const patchLike = async () => {
     // Send a PATCH request to update the number of likes
-    const response = await fetch(`http://localjost:3001/posts/${postId}/like`, {
+    const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
       method: 'PATCH',
       headers: {
-        Auhorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       // Sending the logged-in user's ID in the request body
@@ -72,13 +72,14 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
 
       <FlexBetween mt='0.25rem'>
         <FlexBetween gap='1rem'>
-          {/* Likes */}
+          {/* Like Section */}
           <FlexBetween gap='0.3rem'>
             <IconButton onClick={patchLike}>{isLiked ? <FavoriteOutlined sx={{ color: primary }} /> : <FavoriteBorderOutlined />}</IconButton>
             {/* Like Count */}
             <Typography>{likeCount}</Typography>
           </FlexBetween>
 
+          {/* Comment Section */}
           <FlexBetween gap='0.3rem'>
             <IconButton onClick={() => setIsComments(!isComments)}>
               {/* Toggle comments */}
@@ -95,17 +96,19 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
         </IconButton>
       </FlexBetween>
 
-      {/* Check if comments whould be displayed */}
+      {/* Check if comments should be displayed */}
       {isComments && (
-        <Box>
+        <Box mt='0.5rem'>
           {/* Map through the comments array */}
           {comments.map((comment, i) => (
-            // Unique key for each comment
+            // Make a unique key for each comment
             <Box key={`${name}-${i}`}>
               <Divider />
+
               <Typography sx={{ color: main, m: '0.5rem 0', pl: '1rem' }}>{comment}</Typography>
             </Box>
           ))}
+
           <Divider />
         </Box>
       )}
