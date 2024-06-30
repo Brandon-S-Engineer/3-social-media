@@ -66,7 +66,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
             navigate(0); // Workaround to fix bug where components do not re-render
           }}>
           <Typography
-            color={medium}
+            color={main}
             variant='h5'
             flexWrap='500'
             sx={{
