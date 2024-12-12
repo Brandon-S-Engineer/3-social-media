@@ -1,54 +1,38 @@
-// MUI Icons
 import { ManageAccountsOutlined, EditOutlined, LocationOnOutlined, WorkOutlineOutlined } from '@mui/icons-material';
 
-// MUI Components
 import { Box, Typography, Divider, useTheme } from '@mui/material';
 
-// Custom Components
 import UserImage from 'components/UserImage';
 import FlexBetween from 'components/FlexBetween';
 import WidgetWrapper from 'components/WidgetWrapper';
 
-// Hooks from React-Redux
 import { useSelector } from 'react-redux';
 
-// React
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-  // MUI Theme
   const { palette } = useTheme();
-  // Redux store token
+  const navigate = useNavigate();
   const token = useSelector((state) => state.token);
-  // Destructure theme colors
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
 
-  // Function to fetch user data
   const getUser = async () => {
-    // Make a GET request to fetch user data
     const response = await fetch(`http://localhost:3001/users/${userId}`, {
-      method: 'GET', // HTTP method
-      headers: { Authorization: `Bearer ${token}` }, // Authorization header with token
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` },
     });
-
-    // Parse the response as JSON
     const data = await response.json();
-
-    // Update the state with fetched user data
     setUser(data);
   };
 
-  // useEffect hook to call getuser when the component mounts
   useEffect(() => {
     getUser();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Conditional rendering based on user state
   if (!user) {
     return null;
   }
@@ -57,11 +41,9 @@ const UserWidget = ({ userId, picturePath }) => {
 
   return (
     <WidgetWrapper>
-      {/* Row 1 */}
       <FlexBetween
         gap='0.5rem'
-        pb='1.5rem'
-        // Navigation on click
+        pb='1.1rem'
         onClick={() => navigate(`/profile/${userId}`)}>
         <FlexBetween gap='1rem'>
           <UserImage image={picturePath} />
@@ -78,17 +60,15 @@ const UserWidget = ({ userId, picturePath }) => {
               }}>
               {firstName} {lastName}
             </Typography>
-
             <Typography color={medium}>{friends.length} friends</Typography>
           </Box>
         </FlexBetween>
-
         <ManageAccountsOutlined />
       </FlexBetween>
 
       <Divider />
 
-      {/* Row 2 */}
+      {/* SECOND ROW */}
       <Box p='1rem 0'>
         <Box
           display='flex'
@@ -115,7 +95,7 @@ const UserWidget = ({ userId, picturePath }) => {
 
       <Divider />
 
-      {/* Row 3 */}
+      {/* THIRD ROW */}
       <Box p='1rem 0'>
         <FlexBetween mb='0.5rem'>
           <Typography color={medium}>Who's viewed your profile</Typography>
@@ -137,7 +117,7 @@ const UserWidget = ({ userId, picturePath }) => {
 
       <Divider />
 
-      {/* Row 4 */}
+      {/* FOURTH ROW */}
       <Box p='1rem 0'>
         <Typography
           fontSize='1rem'
@@ -190,3 +170,121 @@ const UserWidget = ({ userId, picturePath }) => {
 };
 
 export default UserWidget;
+
+// import { ManageAccountsOutlined, EditOutlined, LocationOnOutlined, WorkOutlineOutlined } from '@mui/icons-material';
+// import { Box, Typography, Divider, useTheme } from '@mui/material';
+// import UserImage from 'components/UserImage';
+// import FlexBetween from 'components/FlexBetween';
+// import WidgetWrapper from 'components/WidgetWrapper';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+
+// const UserWidget = ({ userId, picturePath }) => {
+//   // const dispatch = useDispatch();
+//   const navigate = useNavigate();
+//   const { palette } = useTheme();
+//   const token = useSelector((state) => state.token);
+//   const dark = palette.neutral.dark;
+//   const medium = palette.neutral.medium;
+//   const main = palette.neutral.main;
+
+//   // Get user data from Redux instead of local state
+//   const user = useSelector((state) => state.user); // Make sure this holds user data from Redux
+//   const friendsFromRedux = useSelector((state) => state.user.friends);
+
+//   // Fetch user data from API
+//   const getUser = async () => {
+//     const response = await fetch(`http://localhost:3001/users/${userId}`, {
+//       method: 'GET',
+//       headers: { Authorization: `Bearer ${token}` },
+//     });
+
+//     const data = await response.json();
+
+//     // Ensure friends is an array before dispatching
+//     data.friends = Array.isArray(data.friends) ? data.friends : [];
+//   };
+
+//   useEffect(() => {
+//     getUser();
+//   }, []); // Run once on component mount
+
+//   if (!user) {
+//     return null;
+//   }
+
+//   // Destructure user data from Redux state
+//   const { firstName, lastName, location, occupation, viewedProfile, impressions } = user;
+
+//   return (
+//     <WidgetWrapper>
+//       <FlexBetween
+//         gap='0.5rem'
+//         pb='1.5rem'
+//         onClick={() => navigate(`/profile/${userId}`)}>
+//         <FlexBetween gap='1rem'>
+//           <UserImage image={picturePath} />
+//           <Box>
+//             <Typography
+//               variant='h4'
+//               color={dark}
+//               fontWeight='500'
+//               sx={{
+//                 '&:hover': {
+//                   color: palette.primary.light,
+//                   cursor: 'pointer',
+//                 },
+//               }}>
+//               {firstName} {lastName}
+//             </Typography>
+
+//             <Typography color={medium}>{Array.isArray(friendsFromRedux) ? friendsFromRedux.length : 0} friends</Typography>
+//           </Box>
+//         </FlexBetween>
+
+//         <ManageAccountsOutlined />
+//       </FlexBetween>
+
+//       <Divider />
+
+//       <Box p='1rem 0'>
+//         <Box
+//           display='flex'
+//           alignItems='center'
+//           gap='1rem'
+//           mb='0.5rem'>
+//           <LocationOnOutlined
+//             fontSize='large'
+//             sx={{ color: main }}
+//           />
+//           <Typography color={medium}>{location}</Typography>
+//         </Box>
+//         <Box
+//           display='flex'
+//           alignItems='center'
+//           gap='1rem'>
+//           <WorkOutlineOutlined
+//             fontSize='large'
+//             sx={{ color: main }}
+//           />
+//           <Typography color={medium}>{occupation}</Typography>
+//         </Box>
+//       </Box>
+
+//       <Divider />
+
+//       {/* Row 3 */}
+//       <Box p='1rem 0'>
+//         <FlexBetween mb='0.5rem'>
+//           <Typography color={medium}>Who's viewed your profile: {viewedProfile}</Typography>
+//         </FlexBetween>
+//         <FlexBetween mb='0.5rem'>
+//           <Typography color={medium}>Profile impressions: {impressions}</Typography>
+//         </FlexBetween>
+//       </Box>
+//     </WidgetWrapper>
+//   );
+// };
+
+// export default UserWidget;

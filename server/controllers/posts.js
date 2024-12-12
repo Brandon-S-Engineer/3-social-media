@@ -2,6 +2,39 @@ import Post from '../models/Post.js';
 import User from '../models/User.js';
 
 //? Asynchronous function to create a new post
+// export const createPost = async (req, res) => {
+//   try {
+//     // Extract relevant data from the request body
+//     const { userId, description, picturePath } = req.body;
+
+//     // Retrieve the user who is creating the post
+//     const user = await User.findById(userId);
+
+//     // Create a new post using the user's data and the provided info
+//     const newPost = new Post({
+//       userId,
+//       firstName: user.firstName,
+//       lastName: user.lastName,
+//       location: user.location,
+//       description,
+//       userPicturePath: user.picturePath,
+//       picturePath,
+//       likes: {},
+//       comments: [],
+//     });
+
+//     // Save the new post to the database
+//     await newPost.save();
+
+//     // Retrieve and return all posts (could be limited or paginated)
+//     const post = await Post.find();
+//     res.status(201).json(post); // Send the new post data with a 201 Created status
+//   } catch (err) {
+//     // If there's an issue creating the post, send a 409 Conflict error
+//     res.status(409).json({ message: err.message });
+//   }
+// };
+
 export const createPost = async (req, res) => {
   try {
     // Extract relevant data from the request body
@@ -26,9 +59,8 @@ export const createPost = async (req, res) => {
     // Save the new post to the database
     await newPost.save();
 
-    // Retrieve and return all posts (could be limited or paginated)
-    const post = await Post.find();
-    res.status(201).json(post); // Send the new post data with a 201 Created status
+    // Return only the newly created post
+    res.status(201).json(newPost);
   } catch (err) {
     // If there's an issue creating the post, send a 409 Conflict error
     res.status(409).json({ message: err.message });
@@ -53,10 +85,13 @@ export const getUserPosts = async (req, res) => {
   try {
     // Extract the user ID from request parameters
     const { userId } = req.params;
+
     // Retrieve posts from the database where the userId matches the provided ID
-    const post = await Post.find({ userId });
+    // const posts = await Post.find({ userId });
+    const posts = await Post.find({ userId }).sort({ _id: -1 }); // Sort by _id in descending order
+
     // Send the retrieved posts back to the client with a 200 OK status
-    res.status(200).json(post);
+    res.status(200).json(posts);
   } catch (err) {
     // If an error occurs, return a 404 Not Found status with the error message
     res.status(404).json({ message: err.message });

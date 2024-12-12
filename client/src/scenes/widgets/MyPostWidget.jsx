@@ -20,25 +20,31 @@ const MyPostWidget = ({ picturePath }) => {
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
 
+  const posts = useSelector((state) => state.posts || []); // Default to an empty array
+
   const handlePost = async () => {
     const formData = new FormData();
     formData.append('userId', _id);
     formData.append('description', post);
+
     if (image) {
       formData.append('picture', image);
       formData.append('picturePath', image.name);
     }
 
-    const response = await fetch(`http:localhost:3001/posts`, {
+    const response = await fetch('http://localhost:3001/posts', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
 
-    const posts = await response.json();
-    dispatch(setPosts({ posts }));
+    const newPost = await response.json();
+
+    // Append the new post to the current Redux state
+    dispatch(setPosts({ posts: [newPost, ...posts] }));
+
     setImage(null);
-    setPosts('');
+    setPost('');
   };
 
   return (
@@ -46,7 +52,7 @@ const MyPostWidget = ({ picturePath }) => {
       <FlexBetween gap='1.5rem'>
         <UserImage image={picturePath} />
         <InputBase
-          placeholder="What's on your mind..."
+          placeholder='Create a Post'
           onChange={(e) => setPost(e.target.value)}
           value={post}
           sx={{
@@ -88,7 +94,6 @@ const MyPostWidget = ({ picturePath }) => {
                   )}
                 </Box>
                 {image && (
-                  // Remove Image
                   <IconButton
                     onClick={() => setImage(null)}
                     sx={{ width: '15%' }}>
@@ -111,7 +116,7 @@ const MyPostWidget = ({ picturePath }) => {
           <ImageOutlined sx={{ color: mediumMain }} />
           <Typography
             color={mediumMain}
-            sx={{ '&:hover': { cursor: 'pointer', color: 'medium' } }}>
+            sx={{ '&:hover': { cursor: 'pointer', color: medium } }}>
             Image
           </Typography>
         </FlexBetween>
@@ -125,16 +130,15 @@ const MyPostWidget = ({ picturePath }) => {
 
             <FlexBetween gap='0.25rem'>
               <AttachFileOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Attatchment</Typography>
+              <Typography color={mediumMain}>Attachment</Typography>
             </FlexBetween>
 
             <FlexBetween gap='0.25rem'>
               <MicOutlined sx={{ color: mediumMain }} />
-              <Typography color={{ mediumMain }}>Audio</Typography>
+              <Typography color={mediumMain}>Audio</Typography>
             </FlexBetween>
           </>
         ) : (
-          //? 3 Dots
           <FlexBetween gap='0.25rem'>
             <MoreHorizOutlined sx={{ color: mediumMain }} />
           </FlexBetween>
@@ -147,6 +151,7 @@ const MyPostWidget = ({ picturePath }) => {
             color: palette.background.alt,
             backgroundColor: palette.primary.main,
             borderRadius: '3rem',
+            textTransform: 'none',
           }}>
           Post
         </Button>

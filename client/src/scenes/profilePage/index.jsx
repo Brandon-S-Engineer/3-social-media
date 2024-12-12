@@ -10,13 +10,13 @@ import UserWidget from 'scenes/widgets/UserWidget';
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null); // State to store user data, initialized to null
-  const { userId } = useParams; // Retrieves userId from the URL parameters
+  const { userId } = useParams(); // Retrieves userId from the URL parameters
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery('(min-width:1000px');
 
   const getUser = async () => {
     // Fetches user data from the server for the given userId
-    const response = await fetch(`http:localhost:3001/users/${userId}`, {
+    const response = await fetch(`http://localhost:3001/users/${userId}`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     });

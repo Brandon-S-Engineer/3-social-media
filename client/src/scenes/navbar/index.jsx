@@ -42,8 +42,8 @@ const Navbar = () => {
           color='primary'
           onClick={() => navigate('/home')}
           sx={{
+            textShadow: '1px 1px 1px rgba(0, 0, 0, 0.6)',
             '&:hover': {
-              color: primaryLight,
               cursor: 'pointer',
             },
           }}>
@@ -83,7 +83,8 @@ const Navbar = () => {
               value={fullName}
               sx={{
                 backgroundColor: neutralLight,
-                width: '150px',
+                minWidth: '150px',
+                maxWidth: '300px',
                 borderRadius: '0.25rem',
                 p: '0.25rem 1rem',
                 // Styles for the dropdown icon

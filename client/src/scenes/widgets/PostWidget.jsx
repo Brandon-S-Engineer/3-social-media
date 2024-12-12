@@ -12,16 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPost } from 'state';
 
 const PostWidget = ({ postId, postUserId, name, description, location, picturePath, userPicturePath, likes, comments }) => {
-  // State to toggle visibility of comments
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
-  // Access the token from the Redux store
   const token = useSelector((state) => state.token);
-  // Access the logged-in user's ID from the Redux store
   const loggedInUserId = useSelector((state) => state.token);
-  // Determine if the logged-in user has liked the post
   const isLiked = Boolean(likes[loggedInUserId]);
-  // Number of likes the post has received
   const likeCount = Object.keys(likes).length;
 
   // Access the theme palette

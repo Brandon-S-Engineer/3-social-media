@@ -258,7 +258,7 @@ const Form = () => {
                   color: palette.primary.light,
                 },
               }}>
-              {isLogin ? "Don't have an account? Sign Up here." : 'Already have an account? Login here.'}
+              {isLogin ? 'Sign Up' : 'Log In'}
             </Typography>
           </Box>
         </form>

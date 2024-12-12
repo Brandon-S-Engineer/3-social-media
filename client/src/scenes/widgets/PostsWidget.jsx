@@ -16,7 +16,6 @@ function PostsWidget({ userId, isProfile = false }) {
     });
     const data = await response.json();
     dispatch(setPosts({ posts: data }));
-    // Dispatches action to update posts in the store. Now the updated store can be used to get the posts data in the front end
   };
 
   const getUserPosts = async () => {

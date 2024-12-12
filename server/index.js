@@ -76,10 +76,7 @@ const PORT = process.env.PORT || 6001;
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URL)
   .then(() => {
     // Start the server on successful database connection and log
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));

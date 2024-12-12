@@ -12,7 +12,6 @@ export const getUser = async (req, res) => {
     // If user is found, send user data with a 200 OK status
     res.status(200).json(user);
   } catch (err) {
-    // If an error occurs (e.g., user not found), send a 404 Not Found status with the error message
     res.status(404).json({ message: err.message });
   }
 };
@@ -37,7 +36,6 @@ export const getUserFriends = async (req, res) => {
     // Send the formatted friends list as a JSON response with a 200 OK status
     res.status(200).json(formattedFriends);
   } catch (err) {
-    // If an error occurs, send a 404 Not Found status with the error message
     res.status(404).json({ message: err.message });
   }
 };
@@ -76,7 +74,6 @@ export const addRemoveFriend = async (req, res) => {
     // Send the formatted list of friends as a JSON response with a 200 OK status
     res.status(200).json(formattedFriends);
   } catch (err) {
-    // If an error occurs, send a 404 Not Found status with the error message
     res.status(404).json({ message: err.message });
   }
 };

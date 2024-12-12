@@ -15,7 +15,14 @@ const LoginPage = () => {
         <Typography
           fontWeight='bold'
           fontSize='32px'
-          color='primary'>
+          color='primary'
+          sx={{
+            textShadow: '1px 1px 1px rgba(0, 0, 0, 0.6)',
+            '&:hover': {
+              cursor: 'pointer',
+            },
+          }}>
+          {' '}
           Sociopedia
         </Typography>
       </Box>
@@ -30,7 +37,7 @@ const LoginPage = () => {
           fontWeight='500'
           variant='h5'
           sx={{ mb: '1.5rem' }}>
-          Welcome to Socipedoa, the Social Media for Social Enthusiasts!
+          Welcome to Socipedoa, the Social Media for Social Enthusiasts.
         </Typography>
         <Form />
       </Box>
