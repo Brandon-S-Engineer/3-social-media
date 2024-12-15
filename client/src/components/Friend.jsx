@@ -1,3 +1,5 @@
+import React from 'react';
+
 // Icons for adding and removing a person (friend)
 import { PersonAddOutlined, PersonRemoveOutlined } from '@mui/icons-material';
 
@@ -10,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; // Hook for navigation between routes
 
 // Action to update friends state in the Redux store
-import { setFriends } from 'state';
+import { setFriends } from '../state';
 
 import FlexBetween from './FlexBetween';
 
@@ -39,16 +41,24 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
 
   // Asynchronous PATCH request to update user-friend relationship
   const patchFriend = async () => {
-    const response = await fetch(`http://localhost:3001/users/${_id}/${friendId}`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    // Dispatching an action to update friends in the Redux store with the new data (add/remove)
-    dispatch(setFriends({ friends: data }));
+    try {
+      const response = await fetch(`http://localhost:3001/users/${_id}/${friendId}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update');
+      }
+
+      const data = await response.json();
+      dispatch(setFriends({ friends: data }));
+    } catch (error) {
+      console.error('Error updating friend relationship:', error);
+    }
   };
 
   return (
@@ -62,6 +72,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
         {/* Navigate to the friend's profile on click */}
         <Box
           onClick={() => {
+            console.log('Navigating to:', `/profile/${friendId}`); //!
             navigate(`/profile/${friendId}`);
             navigate(0); // Workaround to fix bug where components do not re-render
           }}>
