@@ -72,7 +72,6 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
         {/* Navigate to the friend's profile on click */}
         <Box
           onClick={() => {
-            console.log('Navigating to:', `/profile/${friendId}`); //!
             navigate(`/profile/${friendId}`);
             navigate(0); // Workaround to fix bug where components do not re-render
           }}>

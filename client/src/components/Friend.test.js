@@ -1,3 +1,12 @@
+// *** 1) Top-level mock of react-router-dom ***
+jest.mock('react-router-dom', () => {
+  const originalModule = jest.requireActual('react-router-dom');
+  return {
+    ...originalModule,
+    useNavigate: jest.fn(),
+  };
+});
+
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -5,6 +14,7 @@ import configureStore from 'redux-mock-store';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
 import Friend from './Friend';
+import { useNavigate } from 'react-router-dom';
 
 // Mocking child components
 jest.mock('./UserImage', () => {
@@ -47,11 +57,17 @@ describe('Friend Component', () => {
       token: 'mockToken',
     });
 
+    // *** 3) Reset and attach the mockNavigate to useNavigate ***
     mockNavigate = jest.fn();
-    jest.mock('react-router-dom', () => ({
-      ...jest.requireActual('react-router-dom'),
-      useNavigate: () => mockNavigate,
-    }));
+    useNavigate.mockReturnValue(mockNavigate);
+
+    jest.clearAllMocks();
+
+    // mockNavigate = jest.fn();
+    // jest.mock('react-router-dom', () => ({
+    //   ...jest.requireActual('react-router-dom'),
+    //   useNavigate: () => mockNavigate,
+    // }));
   });
 
   afterEach(() => {
@@ -60,11 +76,42 @@ describe('Friend Component', () => {
 
   //! /////////////////////////////////////////////////////////////////////////
 
+  it('should navigate to the friend’s profile and refresh', () => {
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <ThemeProvider theme={mockTheme}>
+            <Friend
+              friendId='friend123'
+              name='John Doe'
+              subtitle='Best Friend'
+              userPicturePath='path/to/image.jpg'
+            />
+          </ThemeProvider>
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // *** 4) Click "John Doe" to trigger navigate calls ***
+    const nameElement = screen.getByText('John Doe');
+    fireEvent.click(nameElement);
+
+    // *** 5) The component calls navigate() TWICE: '/profile/friend123' and 0 ***
+    expect(mockNavigate).toHaveBeenCalledTimes(2);
+
+    // The FIRST call should be "/profile/friend123"
+    expect(mockNavigate.mock.calls[0][0]).toBe('/profile/friend123');
+
+    // The SECOND call is "navigate(0)" - force re-render
+    expect(mockNavigate.mock.calls[1][0]).toBe(0);
+  });
+
   // it('should navigate to the friend’s profile and simulate re-render', () => {
   //   render(
   //     <Provider store={store}>
   //       <BrowserRouter>
-  //         <ThemeProvider theme={mockTheme}>=
+  //         <ThemeProvider theme={mockTheme}>
+  //           =
   //           <Friend
   //             friendId='friend123'
   //             name='John Doe'
