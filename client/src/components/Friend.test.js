@@ -65,7 +65,7 @@ describe('Friend Component', () => {
   //     <Provider store={store}>
   //       <BrowserRouter>
   //         <ThemeProvider theme={mockTheme}>=
-=  //           <Friend
+  //           <Friend
   //             friendId='friend123'
   //             name='John Doe'
   //             subtitle='Best Friend'
