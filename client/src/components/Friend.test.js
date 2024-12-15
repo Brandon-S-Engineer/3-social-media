@@ -1,12 +1,3 @@
-// *** 1) Top-level mock of react-router-dom ***
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
-  return {
-    ...originalModule,
-    useNavigate: jest.fn(),
-  };
-});
-
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -15,6 +6,14 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
 import Friend from './Friend';
 import { useNavigate } from 'react-router-dom';
+
+jest.mock('react-router-dom', () => {
+  const originalModule = jest.requireActual('react-router-dom');
+  return {
+    ...originalModule,
+    useNavigate: jest.fn(),
+  };
+});
 
 // Mocking child components
 jest.mock('./UserImage', () => {
