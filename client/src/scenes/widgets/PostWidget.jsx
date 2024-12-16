@@ -2,14 +2,14 @@
 import { ChatBubbleOutlineOutlined, FavoriteBorderOutlined, FavoriteOutlined, ShareOutlined } from '@mui/icons-material';
 // UI components: Box for layout, Divider for separation, IconButton for clickable icons, Typography for text, and useTheme for theming
 import { Box, Divider, IconButton, Typography, useTheme } from '@mui/material';
-import FlexBetween from 'components/FlexBetween';
-import Friend from 'components/Friend';
-import WidgetWrapper from 'components/WidgetWrapper';
+import FlexBetween from '../../components/FlexBetween';
+import Friend from '../../components/Friend';
+import WidgetWrapper from '../../components/WidgetWrapper';
 import { useState } from 'react';
 // Redux hooks to dispatch actions and access state
 import { useDispatch, useSelector } from 'react-redux';
 // Action to update the post state in the Redux store
-import { setPost } from 'state';
+import { setPost } from '../../state';
 
 const PostWidget = ({ postId, postUserId, name, description, location, picturePath, userPicturePath, likes, comments }) => {
   const [isComments, setIsComments] = useState(false);
@@ -69,14 +69,20 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
         <FlexBetween gap='1rem'>
           {/* Like Section */}
           <FlexBetween gap='0.3rem'>
-            <IconButton onClick={patchLike}>{isLiked ? <FavoriteOutlined sx={{ color: primary }} /> : <FavoriteBorderOutlined />}</IconButton>
+            <IconButton
+              aria-label='like' // Testing
+              onClick={patchLike}>
+              {isLiked ? <FavoriteOutlined sx={{ color: primary }} /> : <FavoriteBorderOutlined />}
+            </IconButton>
             {/* Like Count */}
             <Typography>{likeCount}</Typography>
           </FlexBetween>
 
           {/* Comment Section */}
           <FlexBetween gap='0.3rem'>
-            <IconButton onClick={() => setIsComments(!isComments)}>
+            <IconButton
+              aria-label='comment' // Testing
+              onClick={() => setIsComments(!isComments)}>
               {/* Toggle comments */}
               <ChatBubbleOutlineOutlined />
             </IconButton>
@@ -86,7 +92,8 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
         </FlexBetween>
 
         {/* Share Button */}
-        <IconButton>
+        {/* aria-label='share' for testing */}
+        <IconButton aria-label='share'>
           <ShareOutlined />
         </IconButton>
       </FlexBetween>
