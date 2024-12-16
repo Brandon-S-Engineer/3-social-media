@@ -9,19 +9,41 @@ import UserWidget from './UserWidget';
 // Mock Redux store
 const mockStore = configureStore([]);
 
+// Mock useNavigate
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
 // Define a custom theme that includes the neutral palette
 const theme = createTheme({
   palette: {
     neutral: {
-      dark: '#333', // Mock dark color
-      medium: '#666', // Mock medium color
-      main: '#999', // Mock main color
+      dark: '#333',
+      medium: '#666',
+      main: '#999',
+    },
+    primary: {
+      light: '#757ce8',
+      main: '#3f50b5',
+      dark: '#002884',
     },
   },
 });
 
-// Mock fetch
+// Mock fetch globally
 global.fetch = jest.fn();
+
+const mockUserData = {
+  firstName: 'John',
+  lastName: 'Doe',
+  location: 'New York',
+  occupation: 'Software Engineer',
+  viewedProfile: 150,
+  impressions: 1200,
+  friends: [{ id: 1 }, { id: 2 }],
+};
 
 describe('UserWidget Component', () => {
   let store;
@@ -31,16 +53,8 @@ describe('UserWidget Component', () => {
       token: 'mock-token',
     });
 
-    fetch.mockResolvedValueOnce({
-      json: jest.fn().mockResolvedValueOnce({
-        firstName: 'John',
-        lastName: 'Doe',
-        location: 'New York',
-        occupation: 'Software Engineer',
-        viewedProfile: 150,
-        impressions: 1200,
-        friends: [{ id: 1 }, { id: 2 }],
-      }),
+    fetch.mockResolvedValue({
+      json: jest.fn().mockResolvedValue(mockUserData),
     });
   });
 
@@ -80,7 +94,7 @@ describe('UserWidget Component', () => {
       </Provider>
     );
 
-    await screen.findByText(/John Doe/i); // Ensure fetch is called before testing
+    await screen.findByText(/John Doe/i);
     expect(fetch).toHaveBeenCalledWith('http://localhost:3001/users/1', {
       method: 'GET',
       headers: { Authorization: 'Bearer mock-token' },
@@ -88,12 +102,6 @@ describe('UserWidget Component', () => {
   });
 
   it("navigates to the user's profile on click", async () => {
-    const mockNavigate = jest.fn();
-    jest.mock('react-router-dom', () => ({
-      ...jest.requireActual('react-router-dom'),
-      useNavigate: () => mockNavigate,
-    }));
-
     render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
@@ -107,7 +115,7 @@ describe('UserWidget Component', () => {
       </Provider>
     );
 
-    const userName = await screen.findByText(/John Doe/i);
+    const userName = await screen.findByTestId('user-name');
     fireEvent.click(userName);
     expect(mockNavigate).toHaveBeenCalledWith('/profile/1');
   });
@@ -117,7 +125,7 @@ describe('UserWidget Component', () => {
       json: jest.fn().mockResolvedValueOnce(null),
     });
 
-    render(
+    const { container } = render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <BrowserRouter>
@@ -130,8 +138,7 @@ describe('UserWidget Component', () => {
       </Provider>
     );
 
-    const userName = screen.queryByText(/John Doe/i);
-    expect(userName).not.toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('renders dynamic user data correctly', async () => {
@@ -148,7 +155,8 @@ describe('UserWidget Component', () => {
       </Provider>
     );
 
-    expect(await screen.findByText(/John Doe/i)).toBeInTheDocument();
+    const userName = await screen.findByText(/John Doe/i);
+    expect(userName).toBeInTheDocument();
     expect(screen.getByText(/New York/i)).toBeInTheDocument();
     expect(screen.getByText(/Software Engineer/i)).toBeInTheDocument();
     expect(screen.getByText(/150/i)).toBeInTheDocument();
