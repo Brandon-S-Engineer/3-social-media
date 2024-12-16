@@ -2,9 +2,9 @@ import { ManageAccountsOutlined, EditOutlined, LocationOnOutlined, WorkOutlineOu
 
 import { Box, Typography, Divider, useTheme } from '@mui/material';
 
-import UserImage from 'components/UserImage';
-import FlexBetween from 'components/FlexBetween';
-import WidgetWrapper from 'components/WidgetWrapper';
+import UserImage from '../../components/UserImage';
+import FlexBetween from '../../components/FlexBetween';
+import WidgetWrapper from '../../components/WidgetWrapper';
 
 import { useSelector } from 'react-redux';
 

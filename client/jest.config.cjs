@@ -1,20 +1,15 @@
-// jest.config.cjs
 module.exports = {
-  testEnvironment: 'jsdom', // Simulates a browser-like environment
-  setupFilesAfterEnv: ['<rootDir>/setupTests.js'], // Specifies setup file
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest', // Transforms modern JavaScript and TypeScript
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   moduleNameMapper: {
-    '\\.(css|scss)$': 'identity-obj-proxy', // Mocks CSS/SCSS imports
+    '\\.(css|scss)$': 'identity-obj-proxy',
   },
-  collectCoverage: true, // Collect code coverage
-  coverageDirectory: 'coverage', // Directory for coverage reports
-  collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}', // Include source files
-    '!src/**/*.d.ts', // Exclude TypeScript declaration files
-    '!src/index.{js,jsx,ts,tsx}', // Exclude entry files
-  ],
-  resetMocks: true, // Automatically reset mocks after each test
-  clearMocks: true, // Clear mock usage data after each test
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts', '!src/index.{js,jsx,ts,tsx}'],
+  resetMocks: true,
+  clearMocks: true,
 };
