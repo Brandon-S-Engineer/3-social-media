@@ -1,12 +1,12 @@
 import { EditOutlined, DeleteOutlined, AttachFileOutlined, GifBoxOutlined, ImageOutlined, MicOutlined, MoreHorizOutlined } from '@mui/icons-material';
 import { Box, Divider, Typography, InputBase, useTheme, Button, IconButton, useMediaQuery } from '@mui/material';
-import FlexBetween from 'components/FlexBetween';
+import FlexBetween from '../../components/FlexBetween';
 import Dropzone from 'react-dropzone';
-import UserImage from 'components/UserImage';
-import WidgetWrapper from 'components/WidgetWrapper';
+import UserImage from '../../components/UserImage';
+import WidgetWrapper from '../../components/WidgetWrapper';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPosts } from 'state';
+import { setPosts } from '../../state';
 
 const MyPostWidget = ({ picturePath }) => {
   const dispatch = useDispatch();
@@ -67,6 +67,7 @@ const MyPostWidget = ({ picturePath }) => {
       {/* Add Image */}
       {isImage && (
         <Box
+          data-testid='dropzone'
           border={`1px solid ${medium}`}
           borderRadius='5px'
           mt='1rem'
@@ -95,7 +96,9 @@ const MyPostWidget = ({ picturePath }) => {
                 </Box>
                 {image && (
                   <IconButton
-                    onClick={() => setImage(null)}
+                    onClick={() => {
+                      setImage(null);
+                    }}
                     sx={{ width: '15%' }}>
                     <DeleteOutlined />
                   </IconButton>
@@ -112,7 +115,8 @@ const MyPostWidget = ({ picturePath }) => {
         {/* Update image Dropzone state */}
         <FlexBetween
           gap='0.25rem'
-          onClick={() => setIsImage(!isImage)}>
+          onClick={() => setIsImage(!isImage)}
+          data-testid='image-button'>
           <ImageOutlined sx={{ color: mediumMain }} />
           <Typography
             color={mediumMain}
