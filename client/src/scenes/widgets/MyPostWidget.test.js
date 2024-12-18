@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import MyPostWidget from './MyPostWidget';
 import { useDispatch, useSelector } from 'react-redux';
 import '@testing-library/jest-dom';
@@ -116,6 +116,7 @@ describe('MyPostWidget Component', () => {
 
     fireEvent.change(inputField, { target: { value: 'New Post' } });
 
+    // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       fireEvent.click(postButton);
     });
