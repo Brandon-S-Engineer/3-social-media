@@ -26,7 +26,7 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
 
   const patchLike = async () => {
     // Send a PATCH request to update the number of likes
-    const response = await fetch(`${process.env.API_URL}/posts/${postId}/like`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/posts/${postId}/like`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`,

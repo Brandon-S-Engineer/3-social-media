@@ -123,7 +123,7 @@ describe('MyPostWidget Component', () => {
 
     // Check fetch call
     expect(global.fetch).toHaveBeenCalledWith(
-      `${process.env.API_URL}/posts`,
+      `${process.env.REACT_APP_API_URL}/posts`,
       expect.objectContaining({
         method: 'POST',
         headers: { Authorization: 'Bearer mock-token' },
