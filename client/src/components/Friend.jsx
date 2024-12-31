@@ -42,7 +42,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   // Asynchronous PATCH request to update user-friend relationship
   const patchFriend = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/users/${_id}/${friendId}`, {
+      const response = await fetch(`${process.env.API_URL}/users/${_id}/${friendId}`, {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${token}`,

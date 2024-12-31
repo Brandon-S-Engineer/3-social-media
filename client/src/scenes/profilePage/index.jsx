@@ -16,7 +16,7 @@ const ProfilePage = () => {
 
   const getUser = async () => {
     // Fetches user data from the server for the given userId
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
+    const response = await fetch(`${process.env.API_URL}/users/${userId}`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     });

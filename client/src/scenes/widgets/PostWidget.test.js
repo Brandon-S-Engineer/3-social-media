@@ -132,7 +132,7 @@ describe('PostWidget Component', () => {
 
     // Separate the assertions to adhere to ESLint rule (no multiple assertions in `waitFor`)
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3001/posts/1/like', {
+      expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}/posts/1/like`, {
         method: 'PATCH',
         headers: {
           Authorization: 'Bearer mock-token',

@@ -95,7 +95,7 @@ describe('UserWidget Component', () => {
     );
 
     await screen.findByText(/John Doe/i);
-    expect(fetch).toHaveBeenCalledWith('http://localhost:3001/users/1', {
+    expect(fetch).toHaveBeenCalledWith(`${process.env.API_URL}/users/1`, {
       method: 'GET',
       headers: { Authorization: 'Bearer mock-token' },
     });

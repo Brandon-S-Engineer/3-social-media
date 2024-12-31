@@ -70,7 +70,7 @@ const Form = () => {
     formData.append('picturePath', values.picture.name);
 
     // Send POST request
-    const savedUserResponse = await fetch('http://localhost:3001/auth/register', {
+    const savedUserResponse = await fetch(`${process.env.API_URL}/auth/register`, {
       method: 'POST',
       body: formData,
     });

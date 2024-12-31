@@ -227,7 +227,7 @@ describe('Friend Component', () => {
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:3001/users/123/friend123',
+        `${process.env.API_URL}/users/123/friend123`,
         expect.objectContaining({
           method: 'PATCH',
           headers: {

@@ -11,7 +11,7 @@ function PostsWidget({ userId, isProfile = false }) {
   //? Fetch posts from server
   const getPosts = async () => {
     try {
-      const response = await fetch('http://localhost:3001/posts', {
+      const response = await fetch(`${process.env.API_URL}/posts`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -29,7 +29,7 @@ function PostsWidget({ userId, isProfile = false }) {
 
   const getUserPosts = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/posts/${userId}/posts`, {
+      const response = await fetch(`${process.env.API_URL}/posts/${userId}/posts`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       });
