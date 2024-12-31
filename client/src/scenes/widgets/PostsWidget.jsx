@@ -11,7 +11,7 @@ function PostsWidget({ userId, isProfile = false }) {
   //? Fetch posts from server
   const getPosts = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+      const response = await fetch('https://3-social-media.vercel.app/posts', {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -29,7 +29,7 @@ function PostsWidget({ userId, isProfile = false }) {
 
   const getUserPosts = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/posts/${userId}/posts`, {
+      const response = await fetch(`https://3-social-media.vercel.app/posts/${userId}/posts`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       });

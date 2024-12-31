@@ -11,7 +11,7 @@ const UserImage = ({ image, size = '60px' }) => {
         width={size}
         height={size}
         alt='user'
-        src={`${process.env.REACT_APP_API_URL}/assets/${image}`}
+        src={`https://3-social-media.vercel.app/assets/${image}`}
       />
     </Box>
   );

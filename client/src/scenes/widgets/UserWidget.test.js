@@ -95,7 +95,7 @@ describe('UserWidget Component', () => {
     );
 
     await screen.findByText(/John Doe/i);
-    expect(fetch).toHaveBeenCalledWith(`${process.env.REACT_APP_API_URL}/users/1`, {
+    expect(fetch).toHaveBeenCalledWith('https://3-social-media.vercel.app/users/1', {
       method: 'GET',
       headers: { Authorization: 'Bearer mock-token' },
     });

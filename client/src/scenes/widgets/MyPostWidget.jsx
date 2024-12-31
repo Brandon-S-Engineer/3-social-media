@@ -32,7 +32,7 @@ const MyPostWidget = ({ picturePath }) => {
       formData.append('picturePath', image.name);
     }
 
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+    const response = await fetch('https://3-social-media.vercel.app/posts', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: formData,

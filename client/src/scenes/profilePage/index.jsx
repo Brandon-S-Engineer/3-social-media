@@ -16,7 +16,7 @@ const ProfilePage = () => {
 
   const getUser = async () => {
     // Fetches user data from the server for the given userId
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
+    const response = await fetch(`https://3-social-media.vercel.app/users/${userId}`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     });
