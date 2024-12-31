@@ -42,9 +42,9 @@ app.use(cors());
 
 // Updated CORS Configuration
 const allowedOrigins = [
-  'https://3-social-media-z7ma.vercel.app', // Frontend deployed URL
-  'https://3-social-media.vercel.app', // Backend deployed URL
-  'http://localhost:3000', // For local development
+  'https://3-social-media-z7ma.vercel.app/', // Frontend deployed URL
+  'https://3-social-media.vercel.app/', // Backend deployed URL
+  'http://localhost:3000/', // For local development
 ];
 
 app.use(
