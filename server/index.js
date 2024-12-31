@@ -40,6 +40,26 @@ app.use(bodyParser.json({ limit: '30mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
 
+// Updated CORS Configuration
+const allowedOrigins = [
+  'https://3-social-media-z7ma.vercel.app', // Frontend deployed URL
+  'https://3-social-media.vercel.app', // Backend deployed URL
+  'http://localhost:3000', // For local development
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true, // Allow cookies or auth headers if needed
+  })
+);
+
 // Static file serving (consider different storage for production)
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 
