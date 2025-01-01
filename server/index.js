@@ -5,22 +5,16 @@ import dotenv from 'dotenv';
 import multer from 'multer';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import authRoutes from './routes/auth.js';
-import userRoutes from './routes/users.js';
-import postRoutes from './routes/posts.js';
 import { register } from './controllers/auth.js';
 import { createPost } from './controllers/posts.js';
 import { verifyToken } from './middleware/auth.js';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import postRoutes from './routes/posts.js';
 
 dotenv.config();
 
 const app = express();
-
-// Resolve current module file path and directory for static asset handling
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // CORS Configuration
 app.use(
@@ -37,15 +31,51 @@ app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 app.use(morgan('common'));
 
-// Static file serving
-// app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
-
 // In-Memory File Storage for Uploads
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Base URL for GitHub-hosted assets
+const assetsBaseURL = 'https://raw.githubusercontent.com/Brandon-S-Engineer/3-social-media/main/server/public/assets';
+
 // Routes with File Uploads
-app.post('/auth/register', upload.single('picture'), register);
-app.post('/posts', verifyToken, upload.single('picture'), createPost);
+app.post('/auth/register', upload.single('picture'), (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Missing required fields.' });
+    }
+
+    const picturePath = req.file ? `${assetsBaseURL}/${req.file.originalname}` : `${assetsBaseURL}/default.jpg`; // Default image if no upload
+
+    const newUser = {
+      email,
+      password,
+      picturePath,
+    };
+
+    res.status(201).json({ message: 'User registered successfully.', newUser });
+  } catch (err) {
+    console.error('Error in /auth/register:', err.message);
+    res.status(500).json({ message: 'Error in /auth/register', error: err.message });
+  }
+});
+
+app.post('/posts', verifyToken, upload.single('picture'), (req, res) => {
+  try {
+    const picturePath = req.file ? `${assetsBaseURL}/${req.file.originalname}` : `${assetsBaseURL}/default-post.jpg`; // Default image for posts
+
+    const newPost = {
+      ...req.body,
+      picturePath,
+    };
+
+    res.status(201).json({ message: 'Post created successfully.', newPost });
+  } catch (err) {
+    console.error('Error in /posts:', err.message);
+    res.status(500).json({ message: 'Error in /posts', error: err.message });
+  }
+});
 
 // Additional Routes
 app.use('/auth', authRoutes);
@@ -54,7 +84,7 @@ app.use('/posts', postRoutes);
 
 // Test Route
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running with full functionality!' });
+  res.status(200).json({ message: 'Server is running with GitHub-hosted assets!' });
 });
 
 // MongoDB Connection
