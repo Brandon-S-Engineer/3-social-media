@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import multer from 'multer';
 
 dotenv.config();
 
@@ -10,9 +11,35 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Basic Test Route
+// In-Memory Multer Configuration
+const upload = multer({ storage: multer.memoryStorage() });
+
+app.post('/auth/register', upload.single('picture'), (req, res) => {
+  try {
+    console.log('Uploaded File:', req.file); // Logs uploaded file
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Missing required fields.' });
+    }
+
+    // Simulate user creation
+    const newUser = {
+      email,
+      password,
+      picturePath: req.file ? req.file.originalname : 'default.jpg', // Placeholder logic
+    };
+
+    res.status(201).json({ message: 'User registered successfully.', newUser });
+  } catch (err) {
+    console.error('Error in /auth/register:', err.message);
+    res.status(500).json({ message: 'Error in /auth/register', error: err.message });
+  }
+});
+
+// Test Route
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running without uploads!' });
+  res.status(200).json({ message: 'Server is running with in-memory uploads!' });
 });
 
 // MongoDB Connection
