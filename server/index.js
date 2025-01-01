@@ -1,55 +1,114 @@
-//? Working Version
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import multer from 'multer';
 
 dotenv.config();
 
 const app = express();
 
+/* --------------------------- Middleware --------------------------- */
 app.use(cors());
 app.use(express.json());
 
-// In-Memory Multer Configuration
-const upload = multer({ storage: multer.memoryStorage() });
+/* ----------------------- MongoDB User Model ----------------------- */
+// Mock user schema for login
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
 
-app.post('/auth/register', upload.single('picture'), (req, res) => {
+const User = mongoose.model('User', userSchema);
+
+/* ------------------------ Login Endpoint -------------------------- */
+app.post('/auth/login', async (req, res) => {
   try {
-    console.log('Uploaded File:', req.file); // Logs uploaded file
     const { email, password } = req.body;
 
+    // Validate required fields
     if (!email || !password) {
-      return res.status(400).json({ message: 'Missing required fields.' });
+      return res.status(400).json({ message: 'Missing email or password.' });
     }
 
-    // Simulate user creation
-    const newUser = {
-      email,
-      password,
-      picturePath: req.file ? req.file.originalname : 'default.jpg', // Placeholder logic
-    };
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: 'Invalid credentials.' });
+    }
 
-    res.status(201).json({ message: 'User registered successfully.', newUser });
+    // Successful login
+    res.status(200).json({ message: 'Login successful.', user: { email: user.email } });
   } catch (err) {
-    console.error('Error in /auth/register:', err.message);
-    res.status(500).json({ message: 'Error in /auth/register', error: err.message });
+    console.error('Error in /auth/login:', err.message);
+    res.status(500).json({ message: 'Internal server error', error: err.message });
   }
 });
 
-// Test Route
+/* -------------------------- Test Route --------------------------- */
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running with in-memory uploads!' });
+  res.status(200).json({ message: 'Server is running!' });
 });
 
-// MongoDB Connection
+/* ----------------------- MongoDB Connection ----------------------- */
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err.message));
 
 export default app;
+
+//? Working Version
+// import express from 'express';
+// import cors from 'cors';
+// import mongoose from 'mongoose';
+// import dotenv from 'dotenv';
+// import multer from 'multer';
+
+// dotenv.config();
+
+// const app = express();
+
+// app.use(cors());
+// app.use(express.json());
+
+// // In-Memory Multer Configuration
+// const upload = multer({ storage: multer.memoryStorage() });
+
+// app.post('/auth/register', upload.single('picture'), (req, res) => {
+//   try {
+//     console.log('Uploaded File:', req.file); // Logs uploaded file
+//     const { email, password } = req.body;
+
+//     if (!email || !password) {
+//       return res.status(400).json({ message: 'Missing required fields.' });
+//     }
+
+//     // Simulate user creation
+//     const newUser = {
+//       email,
+//       password,
+//       picturePath: req.file ? req.file.originalname : 'default.jpg', // Placeholder logic
+//     };
+
+//     res.status(201).json({ message: 'User registered successfully.', newUser });
+//   } catch (err) {
+//     console.error('Error in /auth/register:', err.message);
+//     res.status(500).json({ message: 'Error in /auth/register', error: err.message });
+//   }
+// });
+
+// // Test Route
+// app.get('/', (req, res) => {
+//   res.status(200).json({ message: 'Server is running with in-memory uploads!' });
+// });
+
+// // MongoDB Connection
+// mongoose
+//   .connect(process.env.MONGO_URL)
+//   .then(() => console.log('Connected to MongoDB'))
+//   .catch((err) => console.error('MongoDB connection error:', err.message));
+
+// export default app;
 
 //? Original
 // import express from 'express';
