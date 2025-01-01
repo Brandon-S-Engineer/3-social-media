@@ -2,18 +2,26 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const app = express();
 
-// Minimal CORS Setup
+// Paths for static assets
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(cors());
 app.use(express.json());
 
-// Test Route
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running!' });
+// Serve Static Files
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
+
+// Test Static Route
+app.get('/test-static', (req, res) => {
+  res.status(200).json({ message: 'Static files served at /assets' });
 });
 
 // MongoDB Connection
