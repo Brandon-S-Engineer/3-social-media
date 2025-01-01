@@ -102,6 +102,10 @@
 
 import express from 'express';
 import cors from 'cors';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
@@ -115,19 +119,49 @@ app.use(
 
 app.use(express.json());
 
+// MongoDB Connection Test
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => {
+    console.error('MongoDB connection error:', err.message);
+  });
+
 // Test Route
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running!' });
-});
-
-// Auth Test Route
-app.post('/auth/login', (req, res) => {
-  const { email, password } = req.body;
-  if (email === 'test@test.com' && password === '1234') {
-    res.status(200).json({ user: { email }, token: '123456789' });
-  } else {
-    res.status(401).json({ error: 'Invalid credentials' });
-  }
+  res.status(200).json({ message: 'Server is running with MongoDB!' });
 });
 
 export default app;
+
+// import express from 'express';
+// import cors from 'cors';
+
+// const app = express();
+
+// app.use(
+//   cors({
+//     origin: ['https://3-social-media-z7ma.vercel.app', 'http://localhost:3000'],
+//     methods: ['GET', 'POST', 'OPTIONS'],
+//     credentials: true,
+//   })
+// );
+
+// app.use(express.json());
+
+// // Test Route
+// app.get('/', (req, res) => {
+//   res.status(200).json({ message: 'Server is running!' });
+// });
+
+// // Auth Test Route
+// app.post('/auth/login', (req, res) => {
+//   const { email, password } = req.body;
+//   if (email === 'test@test.com' && password === '1234') {
+//     res.status(200).json({ user: { email }, token: '123456789' });
+//   } else {
+//     res.status(401).json({ error: 'Invalid credentials' });
+//   }
+// });
+
+// export default app;
