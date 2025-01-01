@@ -1,63 +1,25 @@
 import express from 'express';
-import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import authRoutes from './routes/auth.js';
 
 dotenv.config();
 
 const app = express();
 
-/* --------------------------- Middleware --------------------------- */
-// Customized CORS configuration
-app.use(
-  cors({
-    origin: ['https://3-social-media-z7ma.vercel.app', 'https://3-social-media.vercel.app', 'http://localhost:3000'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true, // Allow cookies and authorization headers
-  })
-);
-
-// JSON Parsing Middleware
+app.use(cors());
 app.use(express.json());
 
-/* ----------------------- MongoDB User Model ----------------------- */
-const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-});
+// Mount the auth routes
+app.use('/auth', authRoutes);
 
-const User = mongoose.model('User', userSchema);
-
-/* ------------------------ Login Endpoint -------------------------- */
-app.post('/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Validate required fields
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Missing email or password.' });
-    }
-
-    // Check if user exists
-    const user = await User.findOne({ email });
-    if (!user || user.password !== password) {
-      return res.status(401).json({ message: 'Invalid credentials.' });
-    }
-
-    // Successful login
-    res.status(200).json({ message: 'Login successful.', user: { email: user.email } });
-  } catch (err) {
-    console.error('Error in /auth/login:', err.message);
-    res.status(500).json({ message: 'Internal server error', error: err.message });
-  }
-});
-
-/* -------------------------- Test Route --------------------------- */
+// Test route
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running with CORS!' });
+  res.status(200).json({ message: 'Server is running!' });
 });
 
-/* ----------------------- MongoDB Connection ----------------------- */
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
