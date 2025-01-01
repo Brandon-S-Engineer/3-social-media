@@ -32,14 +32,19 @@ dotenv.config();
 // Initialize an Express application
 const app = express();
 
-// Middleware configurations for security and request handling
-app.use(express.json());
-app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
-app.use(morgan('common'));
-app.use(bodyParser.json({ limit: '30mb', extended: true }));
-app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: '*', // Allow all origins (testing only)
+    credentials: true, // Allow cookies
+  })
+);
+
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*'); // Or specify allowed origins
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.sendStatus(204); // No Content
+});
 
 // Allowed origins
 // const allowedOrigins = [
@@ -62,15 +67,14 @@ app.use(cors());
 //   })
 // );
 
-app.use(
-  cors({
-    origin: '*', // Allow all origins (testing only)
-    credentials: true, // Allow cookies
-  })
-);
-
-// Explicitly handle preflight requests
-app.options('*', cors());
+// Middleware configurations for security and request handling
+app.use(express.json());
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+app.use(morgan('common'));
+app.use(bodyParser.json({ limit: '30mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
+app.use(cors());
 
 // Static file serving (consider different storage for production)
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
