@@ -21,6 +21,11 @@ app.get('/test-mongo', async (req, res) => {
   }
 });
 
+// Add a route for "/"
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Server is running!' });
+});
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URL)
