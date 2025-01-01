@@ -11,6 +11,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Test Route for '/'
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Server is running!' });
+});
+
 // Test /auth/register
 app.post('/auth/register', async (req, res) => {
   try {
