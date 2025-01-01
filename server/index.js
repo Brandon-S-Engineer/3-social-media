@@ -42,23 +42,30 @@ app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
 
 // Allowed origins
-const allowedOrigins = [
-  'https://3-social-media-z7ma.vercel.app', // Frontend deployed URL
-  'https://3-social-media.vercel.app', // Backend deployed URL
-  'http://localhost:3000', // For local development
-];
+// const allowedOrigins = [
+//   'https://3-social-media-z7ma.vercel.app', // Frontend deployed URL
+//   'https://3-social-media.vercel.app', // Backend deployed URL
+//   'http://localhost:3000', // For local development
+// ];
 
-// Apply CORS middleware
+// // Apply CORS middleware
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error('Not allowed by CORS'));
+//       }
+//     },
+//     credentials: true, // Allow cookies or auth headers
+//   })
+// );
+
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true, // Allow cookies or auth headers
+    origin: '*', // Allow all origins (testing only)
+    credentials: true, // Allow cookies
   })
 );
 
