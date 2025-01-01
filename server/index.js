@@ -8,11 +8,19 @@ dotenv.config();
 const app = express();
 
 /* --------------------------- Middleware --------------------------- */
-app.use(cors());
+// Customized CORS configuration
+app.use(
+  cors({
+    origin: ['https://3-social-media-z7ma.vercel.app', 'https://3-social-media.vercel.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true, // Allow cookies and authorization headers
+  })
+);
+
+// JSON Parsing Middleware
 app.use(express.json());
 
 /* ----------------------- MongoDB User Model ----------------------- */
-// Mock user schema for login
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -46,7 +54,7 @@ app.post('/auth/login', async (req, res) => {
 
 /* -------------------------- Test Route --------------------------- */
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running!' });
+  res.status(200).json({ message: 'Server is running with CORS!' });
 });
 
 /* ----------------------- MongoDB Connection ----------------------- */
