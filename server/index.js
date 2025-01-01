@@ -1,9 +1,9 @@
-//? Working Version
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import multer from 'multer';
+import authRoutes from './routes/auth.js'; // <-- ADDED
+// If you have userRoutes/postRoutes, import them as well.
 
 dotenv.config();
 
@@ -12,48 +12,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// In-Memory Multer Configuration
-const upload = multer({ storage: multer.memoryStorage() });
+// You could do the memory-storage multer logic in routes/auth.js
+// so we don't need a separate "upload" here unless you're using it for something else.
 
-app.post('/auth/register', upload.single('picture'), (req, res) => {
-  try {
-    console.log('Uploaded File:', req.file); // Logs uploaded file
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Missing required fields.' });
-    }
-
-    // Simulate user creation
-    const newUser = {
-      email,
-      password,
-      picturePath: req.file ? req.file.originalname : 'default.jpg', // Placeholder logic
-    };
-
-    res.status(201).json({ message: 'User registered successfully.', newUser });
-  } catch (err) {
-    console.error('Error in /auth/register:', err.message);
-    res.status(500).json({ message: 'Error in /auth/register', error: err.message });
-  }
-});
-
-// Test Route
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running with in-memory uploads!' });
-});
-
-// /* --------------------------------- Routes --------------------------------- */
-// Mount Routes
-app.use('/auth', authRoutes);
-app.use('/users', userRoutes);
-app.use('/posts', postRoutes);
-
-// MongoDB Connection
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err.message));
+
+// Use the /auth routes from the separate file
+app.use('/auth', authRoutes);
+
+// Test Route
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Server is running with in-memory uploads & route files!' });
+});
 
 export default app;
 
