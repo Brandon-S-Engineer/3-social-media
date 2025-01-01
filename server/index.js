@@ -32,40 +32,15 @@ dotenv.config();
 // Initialize an Express application
 const app = express();
 
+/* ----------------------------- Single CORS Call --------------------------- */
 app.use(
   cors({
-    origin: '*', // Allow all origins (testing only)
-    credentials: true, // Allow cookies
+    // Restrict to known front-end deployments (and localhost for dev)
+    origin: ['https://3-social-media-z7ma.vercel.app', 'https://3-social-media.vercel.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
   })
 );
-
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*'); // Or specify allowed origins
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.sendStatus(204); // No Content
-});
-
-// Allowed origins
-// const allowedOrigins = [
-//   'https://3-social-media-z7ma.vercel.app', // Frontend deployed URL
-//   'https://3-social-media.vercel.app', // Backend deployed URL
-//   'http://localhost:3000', // For local development
-// ];
-
-// // Apply CORS middleware
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error('Not allowed by CORS'));
-//       }
-//     },
-//     credentials: true, // Allow cookies or auth headers
-//   })
-// );
 
 // Middleware configurations for security and request handling
 app.use(express.json());
