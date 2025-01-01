@@ -7,21 +7,11 @@ dotenv.config();
 
 const app = express();
 
-// Basic CORS Setup
+// Minimal CORS Setup
 app.use(cors());
 app.use(express.json());
 
-// Test MongoDB Connection
-app.get('/test-mongo', async (req, res) => {
-  try {
-    const result = await mongoose.connection.db.command({ ping: 1 });
-    res.status(200).json({ message: 'MongoDB connected!', result });
-  } catch (err) {
-    res.status(500).json({ message: 'MongoDB connection failed.', error: err.message });
-  }
-});
-
-// Add a route for "/"
+// Test Route
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Server is running!' });
 });
