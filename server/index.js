@@ -1,7 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import multer from 'multer';
 import helmet from 'helmet';
@@ -17,6 +16,8 @@ import { verifyToken } from './middleware/auth.js';
 import User from './models/User.js';
 import Post from './models/Post.js';
 import { users, posts } from './data/index.js';
+
+import cors from 'cors';
 
 /* ----------------------------- Configurations ----------------------------- */
 // Set up and configure the Express application
@@ -40,13 +41,14 @@ app.use(bodyParser.json({ limit: '30mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
 
-// Updated CORS Configuration
+// Allowed origins
 const allowedOrigins = [
-  'https://3-social-media-z7ma.vercel.app/', // Frontend deployed URL
-  'https://3-social-media.vercel.app/', // Backend deployed URL
-  'http://localhost:3000/', // For local development
+  'https://3-social-media-z7ma.vercel.app', // Frontend deployed URL
+  'https://3-social-media.vercel.app', // Backend deployed URL
+  'http://localhost:3000', // For local development
 ];
 
+// Apply CORS middleware
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -56,9 +58,12 @@ app.use(
         callback(new Error('Not allowed by CORS'));
       }
     },
-    credentials: true, // Allow cookies or auth headers if needed
+    credentials: true, // Allow cookies or auth headers
   })
 );
+
+// Explicitly handle preflight requests
+app.options('*', cors());
 
 // Static file serving (consider different storage for production)
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
