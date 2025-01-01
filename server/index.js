@@ -90,10 +90,13 @@ mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
     // Start the server on successful database connection and log
-    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+    // app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 
-    //! Add Data One Time
+    //! Add Data One Time to the data base
     // User.insertMany(users);
     // Post.insertMany(posts);
+    console.log('Connected to MongoDB');
   })
-  .catch((error) => console.log(`${error} did not connect`));
+  .catch((error) => console.log(`Mongo connection error: ${error} from /index.js`));
+
+export default app;
