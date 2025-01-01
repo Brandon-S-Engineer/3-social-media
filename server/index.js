@@ -3,43 +3,58 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import multer from 'multer';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import postRoutes from './routes/posts.js';
+import { register } from './controllers/auth.js';
+import { createPost } from './controllers/posts.js';
+import { verifyToken } from './middleware/auth.js';
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+// Resolve current module file path and directory for static asset handling
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// In-Memory Multer Configuration
+// CORS Configuration
+app.use(
+  cors({
+    origin: ['https://3-social-media.vercel.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  })
+);
+
+// Middleware configurations for security and request handling
+app.use(express.json());
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+app.use(morgan('common'));
+
+// Static file serving
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
+
+// In-Memory File Storage for Uploads
 const upload = multer({ storage: multer.memoryStorage() });
 
-app.post('/auth/register', upload.single('picture'), (req, res) => {
-  try {
-    console.log('Uploaded File:', req.file); // Logs uploaded file
-    const { email, password } = req.body;
+// Routes with File Uploads
+app.post('/auth/register', upload.single('picture'), register);
+app.post('/posts', verifyToken, upload.single('picture'), createPost);
 
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Missing required fields.' });
-    }
-
-    // Simulate user creation
-    const newUser = {
-      email,
-      password,
-      picturePath: req.file ? req.file.originalname : 'default.jpg', // Placeholder logic
-    };
-
-    res.status(201).json({ message: 'User registered successfully.', newUser });
-  } catch (err) {
-    console.error('Error in /auth/register:', err.message);
-    res.status(500).json({ message: 'Error in /auth/register', error: err.message });
-  }
-});
+// Additional Routes
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/posts', postRoutes);
 
 // Test Route
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running with in-memory uploads!' });
+  res.status(200).json({ message: 'Server is running with full functionality!' });
 });
 
 // MongoDB Connection
@@ -49,6 +64,59 @@ mongoose
   .catch((err) => console.error('MongoDB connection error:', err.message));
 
 export default app;
+
+//? Working Version
+// import express from 'express';
+// import cors from 'cors';
+// import mongoose from 'mongoose';
+// import dotenv from 'dotenv';
+// import multer from 'multer';
+
+// dotenv.config();
+
+// const app = express();
+
+// app.use(cors());
+// app.use(express.json());
+
+// // In-Memory Multer Configuration
+// const upload = multer({ storage: multer.memoryStorage() });
+
+// app.post('/auth/register', upload.single('picture'), (req, res) => {
+//   try {
+//     console.log('Uploaded File:', req.file); // Logs uploaded file
+//     const { email, password } = req.body;
+
+//     if (!email || !password) {
+//       return res.status(400).json({ message: 'Missing required fields.' });
+//     }
+
+//     // Simulate user creation
+//     const newUser = {
+//       email,
+//       password,
+//       picturePath: req.file ? req.file.originalname : 'default.jpg', // Placeholder logic
+//     };
+
+//     res.status(201).json({ message: 'User registered successfully.', newUser });
+//   } catch (err) {
+//     console.error('Error in /auth/register:', err.message);
+//     res.status(500).json({ message: 'Error in /auth/register', error: err.message });
+//   }
+// });
+
+// // Test Route
+// app.get('/', (req, res) => {
+//   res.status(200).json({ message: 'Server is running with in-memory uploads!' });
+// });
+
+// // MongoDB Connection
+// mongoose
+//   .connect(process.env.MONGO_URL)
+//   .then(() => console.log('Connected to MongoDB'))
+//   .catch((err) => console.error('MongoDB connection error:', err.message));
+
+// export default app;
 
 //? Original
 // import express from 'express';
