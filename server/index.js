@@ -2,63 +2,26 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import multer from 'multer';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'; // Example for S3
-import authRoutes from './routes/auth.js';
-import userRoutes from './routes/users.js';
-import postRoutes from './routes/posts.js';
-import { register } from './controllers/auth.js';
-import { createPost } from './controllers/posts.js';
-import { verifyToken } from './middleware/auth.js';
 
 dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(
-  cors({
-    origin: ['https://3-social-media.vercel.app', 'http://localhost:3000'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  })
-);
+// Basic CORS Setup
+app.use(cors());
 app.use(express.json());
-app.use(helmet());
-app.use(morgan('common'));
 
-// File Upload (directly to S3)
-const s3 = new S3Client({ region: process.env.AWS_REGION });
-const upload = multer({
-  storage: multer.memoryStorage(), // Memory storage for serverless compatibility
-});
-app.post('/auth/register', upload.single('picture'), async (req, res) => {
+// Test MongoDB Connection
+app.get('/test-mongo', async (req, res) => {
   try {
-    const file = req.file;
-    const params = {
-      Bucket: process.env.S3_BUCKET,
-      Key: file.originalname,
-      Body: file.buffer,
-    };
-    await s3.send(new PutObjectCommand(params));
-    req.body.picturePath = `https://${process.env.S3_BUCKET}.s3.amazonaws.com/${file.originalname}`;
-    register(req, res);
+    const result = await mongoose.connection.db.command({ ping: 1 });
+    res.status(200).json({ message: 'MongoDB connected!', result });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: 'MongoDB connection failed.', error: err.message });
   }
 });
 
-// Routes
-app.use('/auth', authRoutes);
-app.use('/users', userRoutes);
-app.use('/posts', postRoutes);
-
-// Test Route
-app.get('/', (req, res) => res.status(200).json({ message: 'Server is running with MongoDB!' }));
-
-// MongoDB connection
+// MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
