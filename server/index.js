@@ -38,7 +38,7 @@ app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 app.use(morgan('common'));
 
 // Static file serving
-app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
+// app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 
 // In-Memory File Storage for Uploads
 const upload = multer({ storage: multer.memoryStorage() });
