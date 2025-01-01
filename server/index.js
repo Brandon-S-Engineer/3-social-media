@@ -1,3 +1,70 @@
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import multer from 'multer';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import postRoutes from './routes/posts.js';
+import { register } from './controllers/auth.js';
+import { createPost } from './controllers/posts.js';
+import { verifyToken } from './middleware/auth.js';
+
+dotenv.config();
+
+const app = express();
+
+// Paths for static assets
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Middleware
+app.use(
+  cors({
+    origin: ['https://3-social-media.vercel.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+app.use(morgan('common'));
+
+// Serve static files
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
+
+// File upload configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, 'public/assets'),
+  filename: (req, file, cb) => cb(null, file.originalname),
+});
+const upload = multer({ storage });
+
+// Routes
+app.post('/auth/register', upload.single('picture'), register);
+app.post('/posts', verifyToken, upload.single('picture'), createPost);
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/posts', postRoutes);
+
+// Test route
+app.get('/', (req, res) => res.status(200).json({ message: 'Server is running with MongoDB!' }));
+
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('MongoDB connection error:', err.message));
+
+// Export app for Vercel
+export default app;
+
+//? Original
 // import express from 'express';
 // import bodyParser from 'body-parser';
 // import mongoose from 'mongoose';
@@ -100,42 +167,13 @@
 
 // export default app;
 
-import express from 'express';
-import cors from 'cors';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const app = express();
-
-app.use(
-  cors({
-    origin: ['https://3-social-media-z7ma.vercel.app', 'http://localhost:3000'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    credentials: true,
-  })
-);
-
-app.use(express.json());
-
-// MongoDB Connection Test
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => {
-    console.error('MongoDB connection error:', err.message);
-  });
-
-// Test Route
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running with MongoDB!' });
-});
-
-export default app;
-
+//? Working Version
 // import express from 'express';
 // import cors from 'cors';
+// import mongoose from 'mongoose';
+// import dotenv from 'dotenv';
+
+// dotenv.config();
 
 // const app = express();
 
@@ -149,19 +187,17 @@ export default app;
 
 // app.use(express.json());
 
+// // MongoDB Connection Test
+// mongoose
+//   .connect(process.env.MONGO_URL)
+//   .then(() => console.log('Connected to MongoDB'))
+//   .catch((err) => {
+//     console.error('MongoDB connection error:', err.message);
+//   });
+
 // // Test Route
 // app.get('/', (req, res) => {
-//   res.status(200).json({ message: 'Server is running!' });
-// });
-
-// // Auth Test Route
-// app.post('/auth/login', (req, res) => {
-//   const { email, password } = req.body;
-//   if (email === 'test@test.com' && password === '1234') {
-//     res.status(200).json({ user: { email }, token: '123456789' });
-//   } else {
-//     res.status(401).json({ error: 'Invalid credentials' });
-//   }
+//   res.status(200).json({ message: 'Server is running with MongoDB!' });
 // });
 
 // export default app;
