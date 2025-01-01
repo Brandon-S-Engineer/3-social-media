@@ -2,26 +2,28 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const app = express();
 
-// Paths for static assets
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+// Basic CORS Setup
 app.use(cors());
 app.use(express.json());
 
-// Serve Static Files
-app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
-
-// Test Static Route
-app.get('/test-static', (req, res) => {
-  res.status(200).json({ message: 'Static files served at /assets' });
+// Test /auth/register
+app.post('/auth/register', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Missing required fields.' });
+    }
+    // Mock user creation
+    const newUser = { email, password };
+    res.status(201).json({ message: 'User registered successfully.', newUser });
+  } catch (err) {
+    res.status(500).json({ message: 'Error in /auth/register', error: err.message });
+  }
 });
 
 // MongoDB Connection
