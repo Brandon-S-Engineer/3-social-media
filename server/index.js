@@ -2,11 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import multer from 'multer';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import multer from 'multer';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'; // Example for S3
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import postRoutes from './routes/posts.js';
@@ -18,10 +17,6 @@ dotenv.config();
 
 const app = express();
 
-// Paths for static assets
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Middleware
 app.use(
   cors({
@@ -32,27 +27,35 @@ app.use(
 );
 app.use(express.json());
 app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 app.use(morgan('common'));
 
-// Serve static files
-app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
-
-// File upload configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'public/assets'),
-  filename: (req, file, cb) => cb(null, file.originalname),
+// File Upload (directly to S3)
+const s3 = new S3Client({ region: process.env.AWS_REGION });
+const upload = multer({
+  storage: multer.memoryStorage(), // Memory storage for serverless compatibility
 });
-const upload = multer({ storage });
+app.post('/auth/register', upload.single('picture'), async (req, res) => {
+  try {
+    const file = req.file;
+    const params = {
+      Bucket: process.env.S3_BUCKET,
+      Key: file.originalname,
+      Body: file.buffer,
+    };
+    await s3.send(new PutObjectCommand(params));
+    req.body.picturePath = `https://${process.env.S3_BUCKET}.s3.amazonaws.com/${file.originalname}`;
+    register(req, res);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Routes
-app.post('/auth/register', upload.single('picture'), register);
-app.post('/posts', verifyToken, upload.single('picture'), createPost);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 
-// Test route
+// Test Route
 app.get('/', (req, res) => res.status(200).json({ message: 'Server is running with MongoDB!' }));
 
 // MongoDB connection
@@ -61,7 +64,6 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err.message));
 
-// Export app for Vercel
 export default app;
 
 //? Original
