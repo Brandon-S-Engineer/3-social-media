@@ -43,6 +43,12 @@ app.get('/', (req, res) => {
   res.status(200).json({ message: 'Server is running with in-memory uploads!' });
 });
 
+// /* --------------------------------- Routes --------------------------------- */
+// Mount Routes
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/posts', postRoutes);
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URL)
