@@ -90,6 +90,7 @@ const Form = () => {
     const loggedInResponse = await fetch('https://3-social-media.vercel.app/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(values),
     });
 
