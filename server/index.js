@@ -152,38 +152,3 @@ export default app;
 //   .catch((error) => console.log(`Mongo connection error: ${error} from /index.js`));
 
 // export default app;
-
-//? Working Version
-// import express from 'express';
-// import cors from 'cors';
-// import mongoose from 'mongoose';
-// import dotenv from 'dotenv';
-
-// dotenv.config();
-
-// const app = express();
-
-// app.use(
-//   cors({
-//     origin: ['https://3-social-media-z7ma.vercel.app', 'http://localhost:3000'],
-//     methods: ['GET', 'POST', 'OPTIONS'],
-//     credentials: true,
-//   })
-// );
-
-// app.use(express.json());
-
-// // MongoDB Connection Test
-// mongoose
-//   .connect(process.env.MONGO_URL)
-//   .then(() => console.log('Connected to MongoDB'))
-//   .catch((err) => {
-//     console.error('MongoDB connection error:', err.message);
-//   });
-
-// // Test Route
-// app.get('/', (req, res) => {
-//   res.status(200).json({ message: 'Server is running with MongoDB!' });
-// });
-
-// export default app;
