@@ -75,6 +75,11 @@ app.post('/auth/register', upload.single('picture'), register);
 app.post('/posts', verifyToken, upload.single('picture'), createPost);
 
 /* --------------------------------- Routes --------------------------------- */
+// Add a default route for the root path
+app.get('/', (req, res) => {
+  res.status(200).send('Welcome to the backend server of 3-Social-Media!');
+});
+
 // Mount Routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
