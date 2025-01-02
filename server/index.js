@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import User from './models/User.js'; // Assuming this exists in your project
+import multer from 'multer';
+import { login } from './controllers/auth.js'; // Use the login controller
+import User from './models/User.js'; // Import User model
 
 dotenv.config();
 
@@ -13,49 +13,50 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// In-Memory Multer Configuration
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Register Route
+app.post('/auth/register', upload.single('picture'), async (req, res) => {
+  try {
+    console.log('Uploaded File:', req.file); // Logs uploaded file
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Missing required fields.' });
+    }
+
+    // Hash the password and create user
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    const newUser = new User({
+      email,
+      password: passwordHash,
+      picturePath: req.file ? req.file.originalname : 'default.jpg', // Placeholder logic
+    });
+
+    await newUser.save();
+    res.status(201).json({ message: 'User registered successfully.', newUser });
+  } catch (err) {
+    console.error('Error in /auth/register:', err.message);
+    res.status(500).json({ message: 'Error in /auth/register', error: err.message });
+  }
+});
+
+// Login Route
+app.post('/auth/login', login);
+
+// Test Route
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Server is running with in-memory uploads!' });
+});
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err.message));
-
-// Login Route
-app.post('/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Validate input
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Missing email or password.' });
-    }
-
-    // Find user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
-
-    // Compare passwords
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials.' });
-    }
-
-    // Create a JWT token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    // Return token and user data
-    res.status(200).json({ token, user: { id: user._id, email: user.email } });
-  } catch (error) {
-    console.error('Login error:', error.message);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
-});
-
-// Test Route
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Server is running!' });
-});
 
 export default app;
 
