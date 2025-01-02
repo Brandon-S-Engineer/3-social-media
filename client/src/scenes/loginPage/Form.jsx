@@ -70,7 +70,7 @@ const Form = () => {
     formData.append('picturePath', values.picture.name);
 
     // Send POST request
-    const savedUserResponse = await fetch('https://3-social-media.vercel.app/auth/register', {
+    const savedUserResponse = await fetch('https://three-social-media.onrender.com/auth/register', {
       method: 'POST',
       body: formData,
     });
@@ -87,7 +87,7 @@ const Form = () => {
 
   const login = async (values, onSubmitProps) => {
     // POST request to login
-    const loggedInResponse = await fetch('https://3-social-media.vercel.app/auth/login', {
+    const loggedInResponse = await fetch('https://three-social-media.onrender.com/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values),

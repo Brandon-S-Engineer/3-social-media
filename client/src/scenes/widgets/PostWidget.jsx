@@ -26,7 +26,7 @@ const PostWidget = ({ postId, postUserId, name, description, location, picturePa
 
   const patchLike = async () => {
     // Send a PATCH request to update the number of likes
-    const response = await fetch(`https://3-social-media.vercel.app/posts/${postId}/like`, {
+    const response = await fetch(`https://three-social-media.onrender.com/posts/${postId}/like`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`,

@@ -123,7 +123,7 @@ describe('MyPostWidget Component', () => {
 
     // Check fetch call
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://3-social-media.vercel.app/posts',
+      'https://three-social-media.onrender.com/posts',
       expect.objectContaining({
         method: 'POST',
         headers: { Authorization: 'Bearer mock-token' },

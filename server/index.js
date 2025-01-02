@@ -36,7 +36,7 @@ const app = express();
 app.use(
   cors({
     // Restrict to known front-end deployments (and localhost for dev)
-    origin: ['https://3-social-media-z7ma.vercel.app', 'https://3-social-media.vercel.app', 'http://localhost:3000'],
+    origin: ['https://3-social-media-z7ma.vercel.app', 'https://three-social-media.onrender.com', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })

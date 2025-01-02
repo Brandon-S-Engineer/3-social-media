@@ -32,7 +32,7 @@ const MyPostWidget = ({ picturePath }) => {
       formData.append('picturePath', image.name);
     }
 
-    const response = await fetch('https://3-social-media.vercel.app/posts', {
+    const response = await fetch('https://three-social-media.onrender.com/posts', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: formData,

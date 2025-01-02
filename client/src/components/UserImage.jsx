@@ -11,7 +11,7 @@ const UserImage = ({ image, size = '60px' }) => {
         width={size}
         height={size}
         alt='user'
-        src={`https://3-social-media.vercel.app/assets/${image}`}
+        src={`https://three-social-media.onrender.com/assets/${image}`}
       />
     </Box>
   );

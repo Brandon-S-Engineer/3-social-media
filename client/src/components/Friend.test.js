@@ -227,7 +227,7 @@ describe('Friend Component', () => {
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://3-social-media.vercel.app/users/123/friend123',
+        'https://three-social-media.onrender.com/users/123/friend123',
         expect.objectContaining({
           method: 'PATCH',
           headers: {
