@@ -89,7 +89,7 @@ mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
     // Start the server on successful database connection and log
-    // app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+    app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`));
 
     //! Add Data One Time to the data base
     // User.insertMany(users);
