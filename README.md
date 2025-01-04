@@ -7,7 +7,7 @@
 
 ## 🌐 Online Demo
 
-**[Live Demo](#)**  
+**[Live Demo](https://3-social-media-z7ma.vercel.app/)**  
 Experience the app's features, including post creation, friend management, profile visits, and a dark theme interface.
 
 ---
@@ -109,4 +109,4 @@ Experience the app's features, including post creation, friend management, profi
 
 - **Email**: [brandon.s.engineer@gmail.com](mailto:brandon.s.engineer@gmail.com)
 - **LinkedIn**: [Brandon I. Soria](https://www.linkedin.com/in/brandon-i-soria/)
-- **Portfolio**: [Link to Portfolio](#)
+- **Portfolio**: [Link to Portfolio](https://www.brandon-s-engineer.com/)
